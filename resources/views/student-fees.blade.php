@@ -144,7 +144,6 @@
         }
     </style>
 </head>
-<div>hello</div>
 <body>
 <div></div>
     <!-- Sidebar -->

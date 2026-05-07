@@ -14,7 +14,7 @@ class FeeController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
+    { 
         Fee::find($id)->update([
             'status' => $request->status,
         ]);
@@ -37,6 +37,7 @@ class FeeController extends Controller
 
         return redirect()->back()->with('success', 'Reminder sent to ' . $fee->student->name);
     }
+    
     // public function sendreminerall(){
     //     $fees = Fee::with('student')->where('status', 'pending')->get();
 
