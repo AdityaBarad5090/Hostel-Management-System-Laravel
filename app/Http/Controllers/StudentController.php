@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
+use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
@@ -31,7 +32,7 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         $student = Student::create([
-            'name' => $request->name,      
+            'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
             'phone' => $request->phone,
@@ -180,7 +181,7 @@ class StudentController extends Controller
     public function payFees($id)
     {
         $student = Student::with('room')->find(session('student_id'));
-                                                                                         
+
         if (!$student) {
             return redirect('/student/login');
         }
@@ -198,7 +199,7 @@ class StudentController extends Controller
                         'name'        => 'Hostel Fee - ' . $student->name,
                         'description' => 'Room No: ' . ($student->room?->room_number ?? 'N/A'),
                     ],
-                    'unit_amount' => $fee->amount*100, // cents
+                    'unit_amount' => $fee->amount * 100, // cents
                 ],
                 'quantity' => 1,
             ]],
@@ -221,7 +222,83 @@ class StudentController extends Controller
         return redirect('/student/fees')->with('success', '🎉 Payment Successful! Your fee has been paid.');
     }
 
+    // Add these 2 methods in StudentController.php
 
+    // ─────────────────────────────────────────
+    // Show Profile Page
+    // ─────────────────────────────────────────
+    public function profile()
+    {
+        $student = Student::with('room')->find(session('student_id'));
+
+        if (!$student) {
+            return redirect('/student/login');
+        }
+
+        return view('student-profile', compact('student'));
+    }
+
+    // ─────────────────────────────────────────
+    // Update Profile
+    // ─────────────────────────────────────────
+    public function updateProfile(Request $request)
+    {
+        $student = Student::find(session('student_id'));
+
+        if (!$student) {
+            return redirect('/student/login');
+        }
+
+        // Validate password match
+        if ($request->password && $request->password !== $request->password_confirmation) {
+            return redirect()->back()->with('error', 'Passwords do not match!');
+        }
+
+        // Update basic info
+        $data = [
+            'name'  => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+        ];
+
+        // Update password if provided
+        if ($request->password) {
+            $data['password'] = $request->password;
+        }
+
+        // Handle photo upload
+        if ($request->hasFile('photo')) {
+            // Delete old photo if exists
+            if ($student->photo) {
+                Storage::disk('public')->delete($student->photo);
+            }
+            $data['photo'] = $request->file('photo')->store('students', 'public');
+        }
+
+        $student->update($data);
+
+        return redirect()->back()->with('success', 'Profile updated successfully!');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $student = Student::find(session('student_id'));
+
+        // Check current password
+        if ($student->password !== $request->current_password) {
+            return redirect()->back()->with('password_error', 'Current password is incorrect!');
+        }
+
+        // Check confirmation
+        if ($request->password !== $request->password_confirmation) {
+            return redirect()->back()->with('password_error', 'Passwords do not match!');
+        }
+
+        $student->password = $request->password;
+        $student->save();
+
+        return redirect()->back()->with('success', '✅ Password updated successfully!');
+    }
     public function logout()
     {
         session()->forget('student_id');

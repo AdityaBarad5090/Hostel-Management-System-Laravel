@@ -66,6 +66,7 @@
         <a href="/student/room"><i class="fa fa-bed"></i> My Room</a>
         <a href="/student/fees"><i class="fa fa-money-bill"></i> Fees</a>
         <a href="/student/complaint"><i class="fa fa-exclamation-circle"></i> Complaint</a>
+        <a href="/student/profile"><i class="fa fa-user"></i> Profile</a>
         <hr>
         <a href="/student/logout" class="btn btn-danger w-100 mt-3">Logout</a>
     </div>
