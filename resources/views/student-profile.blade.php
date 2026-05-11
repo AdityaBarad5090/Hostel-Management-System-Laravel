@@ -6,7 +6,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-
     <style>
         .box {
             background: white;
@@ -88,7 +87,6 @@
 
             <div class="box mt-3">
 
-                {{-- Profile Photo --}}
                 <div class="text-center mb-4">
                     @if($student->photo)
                         <img src="{{ asset('storage/' . $student->photo) }}"
@@ -99,6 +97,7 @@
                         </div>
                         <img id="preview" class="profile-avatar" style="display:none;">
                     @endif
+                    <br>
                     <label for="photo" class="photo-label">
                         <i class="fa fa-camera"></i> Change Photo
                     </label>
@@ -159,10 +158,10 @@
 
                 <form action="/student/profile/password" method="POST">
                     @csrf
-                    @method('PUT')
+                    @method('PUT') 
 
                     <div class="modal-body">
-
+                                                                                                                          
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Current Password</label>
                             <input type="password" name="current_password" class="form-control"
@@ -217,6 +216,5 @@
             }
         }
     </script>
-
 </body>
 </html>

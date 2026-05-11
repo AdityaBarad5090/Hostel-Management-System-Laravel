@@ -26,7 +26,12 @@
 
     <div class="main">
 
-        <h2 class="mb-4">Dashboard</h2>
+        <div style="display: flex;">
+            <h2 class="mb-4">Dashboard</h2>
+            <a href="#" style="margin-left:1000px;text-decoration:none;color:black;font-size: 20px;">
+                🔔 {{ \App\Models\Notification::where('status', 'unread')->count() }}
+            </a>
+        </div>
 
         <div class="row g-4">
 
@@ -67,9 +72,25 @@
             </div>
 
         </div>
-
+        
+        @foreach($notifications as $notification)
+    
+        <div>
+    
+            {{ $notification->message }}
+    
+            @if($notification->status == 'unread')
+    
+            <a href="/notification/read/{{ $notification->id }}">
+                Mark as Read
+            </a>
+    
+            @endif
+    
+        </div>
+    
+        @endforeach
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

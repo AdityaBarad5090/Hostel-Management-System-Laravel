@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Notification;
 
 class StudentController extends Controller
 {
@@ -214,19 +215,20 @@ class StudentController extends Controller
     public function paySuccess($id)
     {
         $fee = Fee::find($id);
+        $student = Student::find(session('student_id'));
 
         if ($fee) {
             $fee->update(['status' => 'Paid']);
         }
 
+        Notification::create([
+            'message' => $student->name . ' paid ₹' . $fee->amount,
+        ]);
+
         return redirect('/student/fees')->with('success', '🎉 Payment Successful! Your fee has been paid.');
     }
 
-    // Add these 2 methods in StudentController.php
-
-    // ─────────────────────────────────────────
     // Show Profile Page
-    // ─────────────────────────────────────────
     public function profile()
     {
         $student = Student::with('room')->find(session('student_id'));
@@ -238,9 +240,7 @@ class StudentController extends Controller
         return view('student-profile', compact('student'));
     }
 
-    // ─────────────────────────────────────────
     // Update Profile
-    // ─────────────────────────────────────────
     public function updateProfile(Request $request)
     {
         $student = Student::find(session('student_id'));
@@ -249,26 +249,13 @@ class StudentController extends Controller
             return redirect('/student/login');
         }
 
-        // Validate password match
-        if ($request->password && $request->password !== $request->password_confirmation) {
-            return redirect()->back()->with('error', 'Passwords do not match!');
-        }
-
-        // Update basic info
         $data = [
             'name'  => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
         ];
 
-        // Update password if provided
-        if ($request->password) {
-            $data['password'] = $request->password;
-        }
-
-        // Handle photo upload
         if ($request->hasFile('photo')) {
-            // Delete old photo if exists
             if ($student->photo) {
                 Storage::disk('public')->delete($student->photo);
             }
@@ -299,6 +286,7 @@ class StudentController extends Controller
 
         return redirect()->back()->with('success', '✅ Password updated successfully!');
     }
+
     public function logout()
     {
         session()->forget('student_id');

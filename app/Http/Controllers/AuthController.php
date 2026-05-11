@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
-    public function showLogin()  
+    public function showLogin()
     {
         return redirect('/');
     }
@@ -25,10 +26,29 @@ class AuthController extends Controller
         return back()->with('error', 'Invalid Email or Password');
     }
 
+    public function dashboard()
+    {
+        $notification = Notification::latest()->get();
+
+        return view('dashboard', compact('notification'));
+    }
+    public function markAsRead($id)
+    {
+        $notification = Notification::find($id);
+
+        if ($notification) {
+
+            $notification->status = 'read';
+
+            $notification->save();
+        }
+
+        return back();
+    }
+
     public function logout()
     {
         Session::forget('admin');
         return redirect('/');
     }
 }
-

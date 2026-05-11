@@ -69,6 +69,7 @@ Route::get('/student/fees/success/{id}', [StudentController::class, 'paySuccess'
 Route::get('/student/profile',        [StudentController::class, 'profile']);
 Route::put('/student/profile/update', [StudentController::class, 'updateProfile']);
 Route::put('/student/profile/password', [StudentController::class, 'updatePassword']);
+Route::get('/notification/read/{id}', [AuthController::class, 'markAsRead']);
 
 
 Route::get('/student/logout', [StudentController::class, 'logout']);
