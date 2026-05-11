@@ -72,24 +72,26 @@
             </div>
 
         </div>
-        
-        @foreach($notifications as $notification)
-    
-        <div>
-    
-            {{ $notification->message }}
-    
-            @if($notification->status == 'unread')
-    
-            <a href="/notification/read/{{ $notification->id }}">
-                Mark as Read
-            </a>
-    
-            @endif
-    
+
+        <div class="mt-4">
+            <h4>🔔 Notifications</h4>
+
+            @foreach($notifications as $notification)
+
+            <div class="border p-3 mb-2 rounded d-flex">
+                <p class="mb-2">{{ $notification->message }}</p>
+
+                @if($notification->status == 'unread')
+
+                <a href="/notification/read/{{ $notification->id }}"
+                    class="btn btn-sm btn-primary" style="margin-left:20px;">   Mark as Read
+                </a>
+                @endif
+            </div>
+            @endforeach
+            
         </div>
-    
-        @endforeach
+
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
