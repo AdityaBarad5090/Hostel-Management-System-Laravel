@@ -65,7 +65,7 @@ Route::get('/student/complaint', [StudentController::class, 'complaint']);
 Route::post('/student/complaint', [StudentController::class, 'storeComplaint']);
 Route::get('/student/fees/receipt/{id}', [StudentController::class, 'recipt']);
 Route::get('/student/fees/pay/{id}',     [StudentController::class, 'payFees']);
-Route::get('/student/fees/success/{id}', [StudentController::class, 'paySuccess']);
+Route::get('/student/fees/pay-success', [StudentController::class, 'paySuccess']);
 Route::get('/student/profile',        [StudentController::class, 'profile']);
 Route::put('/student/profile/update', [StudentController::class, 'updateProfile']);
 Route::put('/student/profile/password', [StudentController::class, 'updatePassword']);

@@ -9,6 +9,7 @@ use App\Models\Room;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
+use Stripe\PaymentIntent;
 use Stripe\Checkout\Session as StripeSession;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Notification;
@@ -179,55 +180,65 @@ class StudentController extends Controller
         return $pdf->download('receipt.pdf');
     }
 
+
     public function payFees($id)
     {
         $student = Student::with('room')->find(session('student_id'));
-
-        if (!$student) {
-            return redirect('/student/login');
-        }
+        if (!$student) return redirect('/student/login');
 
         $fee = Fee::find($id);
 
         Stripe::setApiKey(config('services.stripe.secret'));
 
-        $session = StripeSession::create([
-            'payment_method_types' => ['card'],
-            'line_items' => [[
-                'price_data' => [
-                    'currency'     => 'inr',
-                    'product_data' => [
-                        'name'        => 'Hostel Fee - ' . $student->name,
-                        'description' => 'Room No: ' . ($student->room?->room_number ?? 'N/A'),
-                    ],
-                    'unit_amount' => $fee->amount * 100, // cents
-                ],
-                'quantity' => 1,
-            ]],
-            'mode'        => 'payment',
-            'success_url' => url('/student/fees/success/' . $fee->id),
-            'cancel_url'  => url('/student/fees'),
+        // Create a PaymentIntent (NOT a Checkout Session)
+        $intent = PaymentIntent::create([
+            'amount'   => $fee->amount * 100, // in paise (INR)
+            'currency' => 'inr',
+            'metadata' => [
+                'fee_id'     => $fee->id,
+                'student_id' => $student->id,
+            ],
         ]);
 
-        return redirect($session->url);
+        return view('payment', [
+            'fee'          => $fee,
+            'student'      => $student,
+            'clientSecret' => $intent->client_secret,
+            'stripeKey'    => config('services.stripe.key'), // publishable key
+        ]);
     }
 
-    public function paySuccess($id)
+    public function paySuccess(Request $request)
     {
-        $fee = Fee::find($id);
-        $student = Student::find(session('student_id'));
+        $paymentIntentId = $request->input('payment_intent');
 
-        if ($fee) {
-            $fee->update(['status' => 'Paid']);
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $intent = PaymentIntent::retrieve($paymentIntentId);
+
+        // Only mark paid if Stripe confirmed it
+        if ($intent->status === 'succeeded') {
+            $feeId  = $intent->metadata->fee_id;
+            $stuId  = $intent->metadata->student_id;
+
+            $fee     = Fee::find($feeId);
+            $student = Student::find($stuId);
+
+            if ($fee && $fee->status !== 'Paid') {
+                $fee->update(['status' => 'Paid']);
+
+                Notification::create([
+                    'message' => $student->name . ' paid ₹' . $fee->amount,
+                ]);
+            }
+
+            return redirect('/student/fees')
+                ->with('success', '🎉 Payment Successful! Your fee has been paid.');
         }
 
-        Notification::create([
-            'message' => $student->name . ' paid ₹' . $fee->amount,
-        ]);
-
-        return redirect('/student/fees')->with('success', '🎉 Payment Successful! Your fee has been paid.');
+        return redirect('/student/fees')
+            ->with('error', 'Payment was not completed. Please try again.');
     }
-
     // Show Profile Page
     public function profile()
     {

@@ -135,7 +135,7 @@
         <div class="card-box">
             <div class="card-title"> My Complaints</div>
 
-            @forelse($complaints as $c)
+            @forelse($complaints as $c) 
             <div class="profile-item">
                 <span>{{ $c->complaint }}</span>
                 <b class="text-primary">{{ $c->status }}</b>
