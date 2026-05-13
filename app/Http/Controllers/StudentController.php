@@ -190,9 +190,8 @@ class StudentController extends Controller
 
         Stripe::setApiKey(config('services.stripe.secret'));
 
-        // Create a PaymentIntent (NOT a Checkout Session)
         $intent = PaymentIntent::create([
-            'amount'   => $fee->amount * 100, // in paise (INR)
+            'amount'   => $fee->amount * 100, 
             'currency' => 'inr',
             'metadata' => [
                 'fee_id'     => $fee->id,
@@ -204,7 +203,7 @@ class StudentController extends Controller
             'fee'          => $fee,
             'student'      => $student,
             'clientSecret' => $intent->client_secret,
-            'stripeKey'    => config('services.stripe.key'), // publishable key
+            'stripeKey'    => config('services.stripe.key'), 
         ]);
     }
 
@@ -216,7 +215,6 @@ class StudentController extends Controller
 
         $intent = PaymentIntent::retrieve($paymentIntentId);
 
-        // Only mark paid if Stripe confirmed it
         if ($intent->status === 'succeeded') {
             $feeId  = $intent->metadata->fee_id;
             $stuId  = $intent->metadata->student_id;
@@ -239,6 +237,7 @@ class StudentController extends Controller
         return redirect('/student/fees')
             ->with('error', 'Payment was not completed. Please try again.');
     }
+    
     // Show Profile Page
     public function profile()
     {
