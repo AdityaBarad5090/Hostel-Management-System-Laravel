@@ -15,9 +15,13 @@
 
 <body>
 
+    @extends('layouts.app')
+
+    @section('content')
+
     <div class="sidebar">
         <h4 class="text-center mb-4">Hostel</h4>
-
+        
         <a href="/dashboard"><i class="fa fa-home"></i> Dashboard</a>
         <a href="/students"><i class="fas fa-users"></i> Students</a>
         <a href="/rooms"><i class="fas fa-bed"></i> Rooms</a>
@@ -26,11 +30,14 @@
         <hr>
         <a href="/logout" class="btn btn-danger w-100">Logout</a>
     </div>
-
+    
     <div class="main">
-
+        
         <div class="d-flex justify-content-between align-items-center mt-3">
             <h4>Complaints Management</h4>
+            <button id="theme-toggle" class="btn btn-dark" style="margin-left: 750px;">
+                🌙
+            </button>
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#complaintModal">
                 Add Complaint
             </button>

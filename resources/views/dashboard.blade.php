@@ -11,10 +11,14 @@
 </head>
 
 <body>
+    @extends('layouts.app')
 
+    @section('content')
+
+    
     <div class="sidebar">
         <h4 class="text-center mb-4">Hostel</h4>
-
+        
         <a href="#" class="bg-primary"><i class="fas fa-home"></i> Dashboard</a>
         <a href="/students"><i class="fas fa-users"></i> Students</a>
         <a href="/rooms"><i class="fas fa-bed"></i> Rooms</a>
@@ -23,16 +27,17 @@
         <hr>
         <a href="/logout" class="btn btn-danger w-100">Logout</a>
     </div>
-
+    
     <div class="main">
 
         <div style="display: flex;">
             <h2 class="mb-4">Dashboard</h2>
-            <a href="#" style="margin-left:1000px;text-decoration:none;color:black;font-size: 20px;">
-                🔔 {{ \App\Models\Notification::where('status', 'unread')->count() }}
-            </a>
+            <button id="theme-toggle" class="btn btn-dark" style="margin-left:1000px;height:40px;">
+                🌙
+            </button>
+            
         </div>
-
+  
         <div class="row g-4">
 
             <div class="col-md-3">
@@ -84,17 +89,16 @@
                 @if($notification->status == 'unread')
 
                 <a href="/notification/read/{{ $notification->id }}"
-                    class="btn btn-sm btn-primary" style="margin-left:20px;">   Mark as Read
+                    class="btn btn-sm btn-primary" style="margin-left:20px;"> Mark as Read
                 </a>
                 @endif
             </div>
             @endforeach
-            
-        </div>
 
+        </div>
     </div>
+    @endsection
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>

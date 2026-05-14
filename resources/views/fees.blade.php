@@ -12,6 +12,9 @@
 </head>
 
 <body>
+    @extends('layouts.app')
+
+    @section('content')
 
     <div class="sidebar">
         <h4 class="text-center mb-4">Hostel</h4>
@@ -28,6 +31,9 @@
 
         <div class="d-flex justify-content-between align-items-center mt-3">
             <h4>Fees Management</h4>
+            <button id="theme-toggle" class="btn btn-dark" style="margin-left:1000px;height:40px;">
+                🌙
+            </button>
         </div>
         @if(session('success'))
         <div class="alert alert-success mt-2">{{ session('success') }}</div>
@@ -116,7 +122,7 @@
                 </div>
             </div>
         </div>
-
+        @endsection
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -14,6 +14,9 @@
 
 <body>
 
+    @extends('layouts.app')
+    @section('content')
+
     <div class="sidebar">
         <h4 class="text-center mb-4">Hostel</h4>
 
@@ -32,7 +35,9 @@
 
         <div class="d-flex justify-content-between mb-3">
             <h4>Rooms Management</h4>
-
+            <button id="theme-toggle" class="btn btn-dark" style="margin-left: 830px;">
+                🌙
+            </button>
             <button class="btn btn-success"
                 onclick="openAddModal()">
                 Add Room
@@ -71,7 +76,7 @@
                     </td>
 
                     <td>
-                        <button class="btn btn-warning btn-sm"onclick="editRoom('{{ $r->id }}','{{ $r->room_number }}','{{ $r->capacity }}','{{ $r->fee }}')">
+                        <button class="btn btn-warning btn-sm" onclick="editRoom('{{ $r->id }}','{{ $r->room_number }}','{{ $r->capacity }}','{{ $r->fee }}')">
                             Edit
                         </button>
 
@@ -98,24 +103,24 @@
 
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalTitle">Add Room</h5>
-                        <button class="btn-close"data-bs-dismiss="modal"></button>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
                     <div class="modal-body">
-                        <input type="number"name="room_number"id="room_number"class="form-control mb-2"placeholder="Room No"required>
+                        <input type="number" name="room_number" id="room_number" class="form-control mb-2" placeholder="Room No" required>
                         <input type="number" name="capacity" id="capacity" class="form-control mb-2" placeholder="Capacity" required>
-                        <input type="number"  name="fee" id="fee" class="form-control mb-2" placeholder="Fee" required>
+                        <input type="number" name="fee" id="fee" class="form-control mb-2" placeholder="Fee" required>
                     </div>
 
                     <div class="modal-footer">
                         <button class="btn btn-success">Save</button>
-                        <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
 
                 </form>
             </div>
         </div>
-
+        @endsection
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -147,10 +152,10 @@
             myModal.show();
         }
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#roomsTable').DataTable();
         });
-
     </script>
 </body>
+
 </html>

@@ -20,6 +20,10 @@
     @endforeach
     @endif
 
+    @extends('layouts.app')
+    @section('content')
+
+
     <div class="sidebar">
         <h4 class="text-center mb-4">Hostel</h4>
 
@@ -36,6 +40,9 @@
 
         <div class="d-flex justify-content-between align-items-center mt-3">
             <h4>Students Management</h4>
+            <button id="theme-toggle" class="btn btn-dark" style="margin-left: 820px;">
+                🌙
+            </button>
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#studentModal">
                 Add Student
             </button>
@@ -150,7 +157,7 @@
                 </div>
             </div>
         </div>
-
+        @endsection
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
