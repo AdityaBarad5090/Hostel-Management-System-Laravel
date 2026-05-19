@@ -15,8 +15,7 @@ class SubscriptionController extends Controller
 
     public function store(Request $request)
     {
-        try {
-            $student = Student::findOrFail($request->student_id); 
+            $student = Student::find($request->student_id); 
 
             $student->createOrGetStripeCustomer();
 
@@ -28,10 +27,6 @@ class SubscriptionController extends Controller
             $student->fees()->update(['status' => 'paid']);
 
             return response()->json(['message' => 'Subscription created successfully!']);
-
-        } catch (\Exception $e) {
-            Log::error('Subscription error: ' . $e->getMessage()); 
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        
     }
 }

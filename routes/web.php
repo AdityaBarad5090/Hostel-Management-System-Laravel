@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Middleware\AdminAuth;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\WebhookController;
 
 Route::get('/fees', [FeeController::class, 'index'])->name('fees.index');
 Route::post('/fees', [FeeController::class, 'store'])->name('fees.store');
@@ -88,4 +89,5 @@ Route::middleware(['studentAuth'])->group(function () {
 Route::get('/subscription/{student}', [SubscriptionController::class, 'index']);
 Route::post('/subscription', [SubscriptionController::class, 'store']);
 
-Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
+Route::post('/stripe/webhook', [WebhookController::class, 'handleWebhook']);
+

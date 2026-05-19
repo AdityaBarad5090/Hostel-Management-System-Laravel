@@ -203,11 +203,10 @@
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    // Hide initials box if visible
+                
                     var initials = document.getElementById('initialsBox');
                     if (initials) initials.style.display = 'none';
 
-                    // Show preview image
                     var preview = document.getElementById('preview');
                     preview.src = e.target.result;
                     preview.style.display = 'inline-block';
