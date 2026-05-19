@@ -57,6 +57,8 @@
 
             <button id="pay-btn" class="btn btn-primary w-100">Pay Now</button>
 
+            <button id="back-btn" class="btn btn-secondary w-100 mt-2" onclick="window.location.href='/student/fees'">Cancel</button>
+
         </div>
     </div>
 

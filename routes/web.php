@@ -8,6 +8,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\AdminAuth;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\StripeWebhookController;
 
 Route::get('/fees', [FeeController::class, 'index'])->name('fees.index');
 Route::post('/fees', [FeeController::class, 'store'])->name('fees.store');
@@ -81,3 +83,9 @@ Route::middleware(['studentAuth'])->group(function () {
     Route::post('/student/complaint', [StudentController::class, 'storeComplaint']);
     Route::get('/student/logout', [StudentController::class, 'logout']);
 });
+
+
+Route::get('/subscription/{student}', [SubscriptionController::class, 'index']);
+Route::post('/subscription', [SubscriptionController::class, 'store']);
+
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);

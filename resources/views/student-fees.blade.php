@@ -13,7 +13,7 @@
             border-radius: 14px;
             padding: 30px 32px 28px;
             max-width: 520px;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
         }
 
         .fee-card-title {
@@ -144,8 +144,9 @@
         }
     </style>
 </head>
+
 <body>
-<div></div>
+    <div></div>
     <!-- Sidebar -->
     <div class="sidebar">
         <h4 class="text-center"> Student</h4>
@@ -161,11 +162,18 @@
 
     <div class="main">
 
-        <h3>💰 My Fees</h3>
+        <div style="display: flex;">
+            <h3>💰 My Fees</h3>
+            <a href="/subscription/{{ $student->id }}"
+                class="btn btn-primary" style="margin-left: 195px;">
+                Subscribe Hostel Fee
+            </a>
+        </div>
+
         @if(session('success'))
-            <div class="alert-success-custom mt-3">
-                <i class="fa fa-circle-check"></i> {{ session('success') }}
-            </div>
+        <div class="alert-success-custom mt-3">
+            <i class="fa fa-circle-check"></i> {{ session('success') }}
+        </div>
         @endif
 
         @forelse($fees as $f)
@@ -194,27 +202,27 @@
                 <label>Payment Status</label>
                 <div>
                     @if(strtolower($f->status) == 'paid')
-                        <span class="badge-paid"><i class="fa fa-check-circle"></i> Paid</span>
+                    <span class="badge-paid"><i class="fa fa-check-circle"></i> Paid</span>
                     @else
-                        <span class="badge-unpaid">⏳ Unpaid</span>
+                    <span class="badge-unpaid">⏳ Unpaid</span>
                     @endif
-                </div>   
-            </div>                                                                                                                                                                                                                                  
-                                                                                                                                
+                </div>
+            </div>
+
             @if(strtolower($f->status) != 'paid')
-                <a href="/student/fees/pay/{{ $f->id }}" class="btn-pay">
-                    <i class="fa fa-credit-card"></i> Pay Fees
-                </a>
-            @endif                                                                                                 
+            <a href="/student/fees/pay/{{ $f->id }}" class="btn-pay">
+                <i class="fa fa-credit-card"></i> Pay Fees
+            </a>
+            @endif
 
             @if(strtolower($f->status) == 'paid')
-                <a href="/student/fees/receipt/{{ $f->id }}" class="btn-download">
-                    <i class="fa fa-download"></i> Download Receipt
-                </a>
+            <a href="/student/fees/receipt/{{ $f->id }}" class="btn-download">
+                <i class="fa fa-download"></i> Download Receipt
+            </a>
             @else
-                <a class="btn-download disabled">
-                    <i class="fa fa-lock"></i> Receipt Unavailable (Unpaid)
-                </a>
+            <a class="btn-download disabled">
+                <i class="fa fa-lock"></i> Receipt Unavailable (Unpaid)
+            </a>
             @endif
 
         </div>
@@ -228,4 +236,5 @@
     </div>
 
 </body>
+
 </html>
