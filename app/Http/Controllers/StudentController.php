@@ -299,7 +299,10 @@ class StudentController extends Controller
 
     public function logout()
     {
-        session()->forget('student_id');
+        if (session() !== null) {
+            session()->forget('student_id');
+        }
+
         return redirect('/');
     }
 }

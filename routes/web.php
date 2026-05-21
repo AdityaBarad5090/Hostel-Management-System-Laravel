@@ -89,5 +89,5 @@ Route::middleware(['studentAuth'])->group(function () {
 Route::get('/subscription/{student}', [SubscriptionController::class, 'index']);
 Route::post('/subscription', [SubscriptionController::class, 'store']);
 
-Route::post('/stripe/webhook', [WebhookController::class, 'handleWebhook']);
+// Route::post('/stripe/webhook', [WebhookController::class, 'handleWebhook']);
 
