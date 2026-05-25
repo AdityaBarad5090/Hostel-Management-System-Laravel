@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Listeners\HandleStripeWebhook;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Event;
 use Laravel\Cashier\Events\WebhookHandled;
@@ -24,7 +25,7 @@ class EventServiceProvider extends ServiceProvider
     {
         Event::listen(
             WebhookHandled::class,
-            Handlewebhook::class
+            HandleStripeWebhook::class
         );
     }
 }

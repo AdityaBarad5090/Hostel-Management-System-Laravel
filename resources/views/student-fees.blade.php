@@ -12,7 +12,7 @@
             background: #fff;
             border-radius: 14px;
             padding: 30px 32px 28px;
-            max-width: 520px;
+            width:325px;
             box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
         }
 
@@ -164,10 +164,6 @@
 
         <div style="display: flex;">
             <h3>💰 My Fees</h3>
-            <a href="/subscription/{{ $student->id }}"
-                class="btn btn-primary" style="margin-left: 195px;">
-                Subscribe Hostel Fee
-            </a>
         </div>
 
         @if(session('success'))
@@ -176,65 +172,105 @@
         </div>
         @endif
 
-        @forelse($fees as $f)
-        <div class="fee-card mt-3">
+        <div style="display: flex; gap: 24px; align-items: flex-start;">
 
-            <div class="fee-card-title">
-                📋 Fee Details
-            </div>
+            {{-- Fee Card --}}
+            @forelse($fees as $f)
+            <div class="fee-card mt-3">
+                <div class="fee-card-title">📋 Fee Details</div>
 
-            <div class="fee-field">
-                <label>Student Name</label>
-                <div class="value">{{ $student?->name ?? 'N/A' }}</div>
-            </div>
-
-            <div class="fee-field">
-                <label>Room Number</label>
-                <div class="value">{{ $student->room?->room_number ?? 'N/A' }}</div>
-            </div>
-
-            <div class="fee-field">
-                <label>Fee Amount</label>
-                <div class="amount">₹ {{ number_format($f->amount) }}</div>
-            </div>
-
-            <div class="fee-field">
-                <label>Payment Status</label>
-                <div>
-                    @if(strtolower($f->status) == 'paid')
-                    <span class="badge-paid"><i class="fa fa-check-circle"></i> Paid</span>
-                    @else
-                    <span class="badge-unpaid">⏳ Unpaid</span>
-                    @endif
+                <div class="fee-field">
+                    <label>Student Name</label>
+                    <div class="value">{{ $student?->name ?? 'N/A' }}</div>
                 </div>
+
+                <div class="fee-field">
+                    <label>Room Number</label>
+                    <div class="value">{{ $student->room?->room_number ?? 'N/A' }}</div>
+                </div>
+
+                <div class="fee-field">
+                    <label>Fee Amount</label>
+                    <div class="amount">₹ {{ number_format($f->amount) }}</div>
+                </div>
+
+                <div class="fee-field">
+                    <label>Payment Status</label>
+                    <div>
+                        @if(strtolower($f->status) == 'paid')
+                        <span class="badge-paid"><i class="fa fa-check-circle"></i> Paid</span>
+                        @else
+                        <span class="badge-unpaid">⏳ Unpaid</span>
+                        @endif
+                    </div>
+                </div>
+
+                @if(strtolower($f->status) != 'paid')
+                <a href="/student/fees/pay/{{ $f->id }}" class="btn-pay">
+                    <i class="fa fa-credit-card"></i> Pay Fees
+                </a>
+                @endif
+
+                @if(strtolower($f->status) == 'paid')
+                <a href="/student/fees/receipt/{{ $f->id }}" class="btn-download">
+                    <i class="fa fa-download"></i> Download Receipt
+                </a>
+                @else
+                <a class="btn-download disabled">
+                    <i class="fa fa-lock"></i> Receipt Unavailable (Unpaid)
+                </a>
+                @endif
             </div>
+            @empty
+            <div class="fee-card mt-3">
+                <div class="fee-card-title">📋 Fee Details</div>
+                <p class="text-muted text-center py-3">No fees record found.</p>
+            </div>
+            @endforelse
 
-            @if(strtolower($f->status) != 'paid')
-            <a href="/student/fees/pay/{{ $f->id }}" class="btn-pay">
-                <i class="fa fa-credit-card"></i> Pay Fees
-            </a>
-            @endif
+            {{-- Subscription Details Card --}}
+            <div class="fee-card mt-3" style="max-width: 100%; width: 70%;margin-left:25px;">
+                <div class="fee-card-title">Subscription Details</div>
 
-            @if(strtolower($f->status) == 'paid')
-            <a href="/student/fees/receipt/{{ $f->id }}" class="btn-download">
-                <i class="fa fa-download"></i> Download Receipt
-            </a>
-            @else
-            <a class="btn-download disabled">
-                <i class="fa fa-lock"></i> Receipt Unavailable (Unpaid)
-            </a>
-            @endif
+                @if($student->subscribed('hostel_fee'))
+                @php $subscription = $student->subscription('hostel_fee'); @endphp
 
+                <table class="table table-bordered text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Subscribed On</th>
+                            <th>Next Billing Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ $student->email }}</td>
+                            <td>
+                                @if($subscription->active())
+                                <span class="badge-paid"> Active</span>
+                                @elseif($subscription->pastDue())
+                                <span class="badge-unpaid">⚠️ Past Due</span>
+                                @elseif($subscription->canceled())
+                                <span style="background:#ef4444;color:#fff;padding:4px 12px;border-radius:999px;font-weight:700;">❌ Cancelled</span>
+                                @endif
+                            </td>
+                            <td>{{ $subscription->created_at->format('d M Y') }}</td>
+                            <td>{{ $student->subscription('hostel_fee')->currentPeriodEnd()?->format('d M Y')}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                @else
+                <p class="text-muted text-center py-3">No active subscription found.</p>
+                <a href="/subscription/{{ $student->id }}" class="btn-pay">
+                    <i class="fa fa-credit-card"></i> Subscribe Now
+                </a>
+                @endif
+            </div>
         </div>
-        @empty
-        <div class="fee-card mt-3">
-            <div class="fee-card-title">📋 Fee Details</div>
-            <p class="text-muted text-center py-3">No fees record found.</p>
-        </div>
-        @endforelse
-
     </div>
-
 </body>
 
 </html>
